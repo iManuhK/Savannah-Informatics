@@ -153,7 +153,12 @@ func main() {
 	router.GET("/orders", auth.OIDCAuthMiddleware(), GetOrders)
 	router.POST("/orders", auth.OIDCAuthMiddleware(), PostOrders)
 
-	router.Run("localhost:8080")
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080" // Default to port 8080 if not set
+	}
+	router.Run("0.0.0.0."+ port)
+	// router.Run("localhost:8080")
 }
 
 func GetCustomers(c *gin.Context) {
