@@ -6,3 +6,22 @@ services:
   plan: free
   buildCommand: go build -o main .
   startCommand: ./main
+  envVars:
+  - key: DBUSER
+    value: postgresadmin_alpw_user
+  - key: DBPASS
+    value: 5AOwgWZ78wRVj0Edsr2iTVQMSoYBANnr
+  - key: AfricasTalkingAPIKey
+    value: atsk_4e44fbe3d8d1140a565c6139fb64edc19f183bc3e64f7ebccdef7cc193bc97c3d35b3434
+  - key: API_KEY
+    value: AIzaSyDJVa2yGO78ONJSj18Mxc0-khPjaEVDqjI
+  - key: CLIENT_ID
+    value: 353930010348-ovgpshl96lvbtfgapkaqbtd3pn5ldnlh.apps.googleusercontent.com
+  - key: CLIENT_SECRET
+    value: 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
+  - key: REDIRECT_URI
+    value: http://localhost:8080/oauth/callback
+  - key: PROVIDER_URL
+    value: https://accounts.google.com
+  - key: DATABASE_URI
+    value: postgresql://postgresadmin_alpw_user:5AOwgWZ78wRVj0Edsr2iTVQMSoYBANnr@dpg-cstr3e3v2p9s73a5om80-a.oregon-postgres.render.com/savannah
