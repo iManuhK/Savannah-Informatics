@@ -6,7 +6,6 @@ import (
 	_ "github.com/lib/pq"
 	"log"
 	"net/http"
-	"github.com/joho/godotenv"
 	"os"
 	"time"
 	"github.com/gin-gonic/gin"
@@ -16,7 +15,7 @@ import (
 	"golang.org/x/oauth2"
 )
 
-var DB *sql.DB
+var db *sql.DB
 
 type Customer struct {
 	Id    int    `json:"cust_id"`
@@ -33,39 +32,61 @@ type Order struct {
 	RelatedCustomer int      `json:"cust_id"`
 }
 
+// func init() {
+// 	if os.Getenv("RENDER") != "true" { 
+// 		if err := godotenv.Load(); err != nil {
+// 			log.Println("Warning: Could not load .env file")
+// 		}
+// 	}
+// }
 func init() {
-	if os.Getenv("RENDER") != "true" { 
-		if err := godotenv.Load(); err != nil {
-			log.Println("Warning: Could not load .env file")
-		}
-	}
+	log.Println("Environment variables loaded from Render")
 }
 
 
-func main() {
-	auth.InitOIDC() // Ensure OIDC is initialized before usage
+// func main() {
+// 	auth.InitOIDC() // Ensure OIDC is initialized before usage
 
-	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s DBname=%s sslmode=disable",
-		"127.0.0.1",
-		"5432",
-		os.Getenv("DBUSER"),
-		os.Getenv("DBPASS"),
-		"savannah",
-	)
+// 	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s DBname=%s sslmode=disable",
+// 		"127.0.0.1",
+// 		"5432",
+// 		os.Getenv("DBUSER"),
+// 		os.Getenv("DBPASS"),
+// 		"savannah",
+// 	)
+
+// 	var err error
+// 	DB, err = sql.Open("postgres", dsn)
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+// 	defer DB.Close()
+
+// 	pingErr := DB.Ping()
+// 	if pingErr != nil {
+// 		log.Fatal(pingErr)
+// 	}
+// 	fmt.Println("Connection Successful!")
+
+func main() {
+	dsn := os.Getenv("DATABASE_URI")
+	if dsn == "" {
+		log.Fatal("DATABASE_URI environment variable not set")
+	}
 
 	var err error
-	DB, err = sql.Open("postgres", dsn)
+	db, err = sql.Open("postgres", dsn)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer DB.Close()
+	defer db.Close()
 
-	pingErr := DB.Ping()
-	if pingErr != nil {
+	if pingErr := db.Ping(); pingErr != nil {
 		log.Fatal(pingErr)
 	}
-	fmt.Println("Connection Successful!")
+	fmt.Println("Connected to the database successfully!")
 
+	
 	router := gin.Default()
 	fmt.Printf("%T\n", auth.GetOAuth2Config())
 
@@ -136,7 +157,7 @@ func main() {
 }
 
 func GetCustomers(c *gin.Context) {
-	rows, err := DB.Query("SELECT cust_id, code, full_name, phone FROM customers")
+	rows, err := db.Query("SELECT cust_id, code, full_name, phone FROM customers")
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to query customers"})
 		return
@@ -164,7 +185,7 @@ func PostCustomers(c *gin.Context) {
 		return
 	}
 
-	err := DB.QueryRow("INSERT INTO customers (code, full_name, phone) VALUES ($1, $2, $3) RETURNING cust_id", newCustomer.Code, newCustomer.Name, newCustomer.Phone).Scan(&newCustomer.Id)
+	err := db.QueryRow("INSERT INTO customers (code, full_name, phone) VALUES ($1, $2, $3) RETURNING cust_id", newCustomer.Code, newCustomer.Name, newCustomer.Phone).Scan(&newCustomer.Id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to insert customer"})
 		return
@@ -174,7 +195,7 @@ func PostCustomers(c *gin.Context) {
 }
 
 func GetOrders(c *gin.Context) {
-	rows, err := DB.Query("SELECT order_id, item, amount, time FROM orders")
+	rows, err := db.Query("SELECT order_id, item, amount, time FROM orders")
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to query orders"})
 		return
@@ -202,7 +223,7 @@ func PostOrders(c *gin.Context) {
 		return
 	}
 
-	err := DB.QueryRow("INSERT INTO orders (item, time, amount, cust_id) VALUES ($1, $2, $3, $4) RETURNING order_id", newOrder.Item, newOrder.Time, newOrder.Amount, newOrder.RelatedCustomer).Scan(&newOrder.Id)
+	err := db.QueryRow("INSERT INTO orders (item, time, amount, cust_id) VALUES ($1, $2, $3, $4) RETURNING order_id", newOrder.Item, newOrder.Time, newOrder.Amount, newOrder.RelatedCustomer).Scan(&newOrder.Id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to insert order"})
 		return
