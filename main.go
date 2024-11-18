@@ -16,7 +16,7 @@ import (
 	"golang.org/x/oauth2"
 )
 
-var db *sql.DB
+var DB *sql.DB
 
 type Customer struct {
 	Id    int    `json:"cust_id"`
@@ -34,15 +34,18 @@ type Order struct {
 }
 
 func init() {
-    if err := godotenv.Load(); err != nil {
-        log.Fatal("Error loading .env file")
-    }
+	if os.Getenv("RENDER") != "true" { 
+		if err := godotenv.Load(); err != nil {
+			log.Println("Warning: Could not load .env file")
+		}
+	}
 }
+
 
 func main() {
 	auth.InitOIDC() // Ensure OIDC is initialized before usage
 
-	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s DBname=%s sslmode=disable",
 		"127.0.0.1",
 		"5432",
 		os.Getenv("DBUSER"),
@@ -51,13 +54,13 @@ func main() {
 	)
 
 	var err error
-	db, err = sql.Open("postgres", dsn)
+	DB, err = sql.Open("postgres", dsn)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer db.Close()
+	defer DB.Close()
 
-	pingErr := db.Ping()
+	pingErr := DB.Ping()
 	if pingErr != nil {
 		log.Fatal(pingErr)
 	}
@@ -133,7 +136,7 @@ func main() {
 }
 
 func GetCustomers(c *gin.Context) {
-	rows, err := db.Query("SELECT cust_id, code, full_name, phone FROM customers")
+	rows, err := DB.Query("SELECT cust_id, code, full_name, phone FROM customers")
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to query customers"})
 		return
@@ -161,7 +164,7 @@ func PostCustomers(c *gin.Context) {
 		return
 	}
 
-	err := db.QueryRow("INSERT INTO customers (code, full_name, phone) VALUES ($1, $2, $3) RETURNING cust_id", newCustomer.Code, newCustomer.Name, newCustomer.Phone).Scan(&newCustomer.Id)
+	err := DB.QueryRow("INSERT INTO customers (code, full_name, phone) VALUES ($1, $2, $3) RETURNING cust_id", newCustomer.Code, newCustomer.Name, newCustomer.Phone).Scan(&newCustomer.Id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to insert customer"})
 		return
@@ -171,7 +174,7 @@ func PostCustomers(c *gin.Context) {
 }
 
 func GetOrders(c *gin.Context) {
-	rows, err := db.Query("SELECT order_id, item, amount, time FROM orders")
+	rows, err := DB.Query("SELECT order_id, item, amount, time FROM orders")
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to query orders"})
 		return
@@ -199,7 +202,7 @@ func PostOrders(c *gin.Context) {
 		return
 	}
 
-	err := db.QueryRow("INSERT INTO orders (item, time, amount, cust_id) VALUES ($1, $2, $3, $4) RETURNING order_id", newOrder.Item, newOrder.Time, newOrder.Amount, newOrder.RelatedCustomer).Scan(&newOrder.Id)
+	err := DB.QueryRow("INSERT INTO orders (item, time, amount, cust_id) VALUES ($1, $2, $3, $4) RETURNING order_id", newOrder.Item, newOrder.Time, newOrder.Amount, newOrder.RelatedCustomer).Scan(&newOrder.Id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to insert order"})
 		return
