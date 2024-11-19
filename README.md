@@ -89,10 +89,40 @@ Connect to the PostgreSQL database hosted at localhost:5432 and use a PostgreSQL
 Serve HTTP requests on localhost:8080.
 Make sure you have the required PostgreSQL database and tables created, and set up the proper credentials for your database connection.
 
+## Continous Integration/Continous Deployment (CI/CD)
+
+This project uses GitHub Actions and Render for automated CI/CD workflows.
+
+### GitHub Actions for CI
+
+CI Workflow: The project includes a GitHub Actions workflow (.github/workflows/go.yml) that run automatically:
+
+How to use:
+
+Push changes to the main branch.
+Monitor the workflow status in the GitHub Actions tab of the repository.
+
+### Render for CD
+
+CD Workflow: Render is used to host and deploy the application. Changes pushed to the main branch are automatically deployed to the Render service.
+
+Configuration:
+
+Deployment configuration is defined in the render.yaml file.
+Environment variables for the deployment are managed via the Render dashboard or the render.yaml file.
+
+How to deploy:
+
+Push changes to the GitHub repository.
+Render will build, upload, and deploy the latest version of the application.
+
 ## Screenshots
 
 [sms sending](https://imgur.com/a/LDe6qAP)
+![alt text](image.png)
+![alt text](image-1.png)
 
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
+
