@@ -157,7 +157,7 @@ func main() {
 	if port == "" {
 		port = "8080" // Default to port 8080 if not set
 	}
-	router.Run("0.0.0.0."+ port)
+	router.Run("0.0.0.0:"+ port)
 	// router.Run("localhost:8080")
 }
 
