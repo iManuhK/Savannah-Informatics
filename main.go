@@ -32,43 +32,13 @@ type Order struct {
 	RelatedCustomer int      `json:"cust_id"`
 }
 
-// func init() {
-// 	if os.Getenv("RENDER") != "true" { 
-// 		if err := godotenv.Load(); err != nil {
-// 			log.Println("Warning: Could not load .env file")
-// 		}
-// 	}
-// }
 func init() {
 	log.Println("Environment variables loaded from Render")
 }
 
-
-// func main() {
-// 	auth.InitOIDC() // Ensure OIDC is initialized before usage
-
-// 	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s DBname=%s sslmode=disable",
-// 		"127.0.0.1",
-// 		"5432",
-// 		os.Getenv("DBUSER"),
-// 		os.Getenv("DBPASS"),
-// 		"savannah",
-// 	)
-
-// 	var err error
-// 	DB, err = sql.Open("postgres", dsn)
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-// 	defer DB.Close()
-
-// 	pingErr := DB.Ping()
-// 	if pingErr != nil {
-// 		log.Fatal(pingErr)
-// 	}
-// 	fmt.Println("Connection Successful!")
-
 func main() {
+	auth.InitOIDC()
+
 	dsn := os.Getenv("DATABASE_URI")
 	if dsn == "" {
 		log.Fatal("DATABASE_URI environment variable not set")
@@ -125,7 +95,6 @@ func main() {
 			return
 		}
 	
-		// Extract user claims from the ID token
 		var claims struct {
 			Email string `json:"email"`
 			Name  string `json:"name"`
@@ -155,9 +124,9 @@ func main() {
 
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8080" // Default to port 8080 if not set
+		port = "8080" 
 	}
-	router.Run("0.0.0.0:"+ port)
+	router.Run("0.0.0.0:"+ port) //port binding
 	// router.Run("localhost:8080")
 }
 

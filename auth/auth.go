@@ -60,15 +60,19 @@ func InitOIDC() {
 
 // GetOAuth2Config returns the OAuth2 configuration
 func GetOAuth2Config() *oauth2.Config {
-	return oauth2Config
+    if oauth2Config == nil {
+        log.Fatal("OAuth2 configuration is not initialized. Ensure InitOIDC is called before using this package.")
+    }
+    return oauth2Config
 }
+
 
 // GetVerifier returns the IDTokenVerifier
 func GetVerifier() *oidc.IDTokenVerifier {
 	return verifier
 }
 
-// OIDCAuthMiddleware is a middleware that ensures the user is authenticated
+// Middleware that ensures the user is authenticated
 func OIDCAuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeader := c.GetHeader("Authorization")

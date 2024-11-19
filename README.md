@@ -118,9 +118,8 @@ Render will build, upload, and deploy the latest version of the application.
 
 ## Screenshots
 
-[sms sending](https://imgur.com/a/LDe6qAP)
-![alt text](image.png)
-![alt text](image-1.png)
+<img width="507" alt="image" src="https://github.com/user-attachments/assets/dbd2c51b-22af-4727-8e10-4042a5d66344">
+
 
 ## License
 
