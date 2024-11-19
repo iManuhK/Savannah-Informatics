@@ -24,7 +24,7 @@ type SMSResponse struct {
 }
 
 func SendSMS(recipients []string, message, senderID string) {
-	UrlStr := "https://api.sandbox.africastalking.com/version1/messaging"
+	urlStr := "https://api.sandbox.africastalking.com/version1/messaging"
 
 	to := strings.Join(recipients, ",")
 
@@ -35,9 +35,9 @@ func SendSMS(recipients []string, message, senderID string) {
 	data.Set("message", message)
 	data.Set("from", senderID)
 
-	req, err := http.NewRequest("POST", UrlStr, strings.NewReader(data.Encode()))
+	req, err := http.NewRequest("POST", urlStr, strings.NewReader(data.Encode()))
 	if err != nil {
-		log.Fatalf("Failed to create HTTP request: %v", err)
+		log.Printf("Failed to create HTTP request: %v", err)
 	}
 
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
@@ -46,18 +46,18 @@ func SendSMS(recipients []string, message, senderID string) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Fatalf("Failed to send SMS: %v", err)
+		log.Printf("Failed to send SMS: %v", err)
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(resp.Body)
-		log.Fatalf("Non-200 status code: %d. Response: %s", resp.StatusCode, string(body))
+		log.Printf("Non-200 status code: %d. Response: %s", resp.StatusCode, string(body))
 	}
 
 	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatalf("Failed to read response body: %v", err)
+		log.Printf("Failed to read response body: %v", err)
 	}
 
 	fmt.Println("Raw Response:", string(respBody))

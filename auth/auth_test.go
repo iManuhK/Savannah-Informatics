@@ -1,8 +1,9 @@
 package auth
 
+
 import (
-	"context"
 	"testing"
+	"os"
 	"net/http"
 	"net/http/httptest"
 	"github.com/gin-gonic/gin"
@@ -11,23 +12,27 @@ import (
 
 // Test InitOIDC with missing environment variables
 func TestInitOIDC_MissingEnv(t *testing.T) {
-	defer func() {
-		if r := recover(); r == nil {
-			t.Errorf("InitOIDC did not panic when environment variables were missing")
-		}
-	}()
+    os.Clearenv() 
+    defer func() {
+        if r := recover(); r != nil {
+            t.Log("Recovered from panic as expected:", r)
+        } else {
+            t.Errorf("Expected panic, but it did not occur")
+        }
+    }()
 
-	auth.InitOIDC() // Should panic due to missing env vars
+    InitOIDC() 
 }
+
 
 // Test OIDC Middleware with valid and invalid tokens
 func TestOIDCAuthMiddleware_InvalidToken(t *testing.T) {
-	auth.InitOIDC() // Ensure OIDC is initialized
+	InitOIDC()
 
 	// Set up Gin context
 	gin.SetMode(gin.TestMode)
 	router := gin.Default()
-	router.Use(auth.OIDCAuthMiddleware())
+	router.Use(OIDCAuthMiddleware())
 	router.GET("/protected", func(c *gin.Context) {
 		c.String(http.StatusOK, "Access granted")
 	})
