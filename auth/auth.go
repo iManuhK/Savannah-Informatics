@@ -34,7 +34,7 @@ func InitOIDC() {
     log.Printf("Loaded config: ClientID: %s, ClientSecret: %s, RedirectURI: %s", clientID, clientSecret, redirectURI)
 
     if clientID == "" || clientSecret == "" || redirectURI == "" {
-        log.Fatal("Missing CLIENT_ID, CLIENT_SECRET, or REDIRECT_URI environment variable")
+        log.Println("Missing CLIENT_ID, CLIENT_SECRET, or REDIRECT_URI environment variable")
     }
 
     if providerURL == "" {
