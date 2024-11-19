@@ -154,7 +154,7 @@ Example Test Output
 
 A successful test run will show output similar to:
 
-    emmanuel@Emmanuels-MacBook-Pro Savannah-Informatics % go test -v
+    emmanuel@Emmanuels-Computer Savannah-Informatics % go test -v
     2024/11/19 14:27:22 Environment variables loaded from Render
     === RUN   TestRoutes
     2024/11/19 14:27:22 Loaded config: ClientID: mock-client-id, ClientSecret: mock-client-secret, RedirectURI: http://localhost:8080/oauth/callback
@@ -204,14 +204,14 @@ A successful test run will show output similar to:
 
 ## Running the Application
 
-To run the application:
+To run the application localy:
 
     go run main.go
 
 This will:
 
-Connect to the PostgreSQL database hosted at localhost:5432 and use a PostgreSQL database named savannah.
-Serve HTTP requests on localhost:8080.
+Connect to the PostgreSQL database hosted remotely and accessed through an env variable (DATABASE_URI)
+Serve HTTP requests on 0.0.0.0:8080.
 Make sure you have the required PostgreSQL database and tables created, and set up the proper credentials for your database connection.
 
 ## Continous Integration/Continous Deployment (CI/CD)
@@ -243,8 +243,8 @@ Render will build, upload, and deploy the latest version of the application.
 
 ## Screenshots
 
+[Blank](image.png).
 <img width="507" alt="image" src="https://github.com/user-attachments/assets/dbd2c51b-22af-4727-8e10-4042a5d66344">
-
 
 ## License
 
