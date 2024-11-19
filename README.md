@@ -241,6 +241,10 @@ How to deploy:
 Push changes to the GitHub repository.
 Render will build, upload, and deploy the latest version of the application.
 
+Hosted deployment live server:
+
+    https://savannah-informatics-1.onrender.com
+
 ## Screenshots
 
 [Blank](image.png).
