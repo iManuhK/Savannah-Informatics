@@ -264,6 +264,8 @@ https://github.com/AfricasTalkingLtd/africastalking-go
 
 https://stackoverflow.com/
 
+https://developers.google.com/identity/openid-connect/openid-connect
+
 https://openid.net/specs/openid-connect-core-1_0.html
 
 ## License
