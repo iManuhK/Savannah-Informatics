@@ -246,6 +246,26 @@ Render will build, upload, and deploy the latest version of the application.
 [Blank](image.png).
 <img width="507" alt="image" src="https://github.com/user-attachments/assets/dbd2c51b-22af-4727-8e10-4042a5d66344">
 
+## Sources
+
+Tabnine
+
+GitHub Copilot
+
+https://chatgpt.com/
+
+https://google.com/
+
+https://www.postgresql.org/docs/
+
+https://pkg.go.dev/go.chromium.org/luci/server/auth#pkg-overview
+
+https://github.com/AfricasTalkingLtd/africastalking-go
+
+https://stackoverflow.com/
+
+https://openid.net/specs/openid-connect-core-1_0.html
+
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
